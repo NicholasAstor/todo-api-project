@@ -38,11 +38,13 @@ CREATE TABLE IF NOT EXISTS `todo`.`User` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `email` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
   `sms` VARCHAR(16) NULL,
   `created_at` TIMESTAMP NOT NULL,
   `updated_at` TIMESTAMP NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
+  UNIQUE INDEX `password_UNIQUE` (`password` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -64,8 +66,8 @@ CREATE TABLE IF NOT EXISTS `todo`.`Todo` (
   CONSTRAINT `fk_Todo_User1`
     FOREIGN KEY (`User_id`)
     REFERENCES `todo`.`User` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -87,13 +89,13 @@ CREATE TABLE IF NOT EXISTS `todo`.`Comment` (
   CONSTRAINT `fk_Comment_User1`
     FOREIGN KEY (`User_id`)
     REFERENCES `todo`.`User` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Comment_Todo1`
     FOREIGN KEY (`Todo_id`)
     REFERENCES `todo`.`Todo` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -126,13 +128,13 @@ CREATE TABLE IF NOT EXISTS `todo`.`TodoCategory` (
   CONSTRAINT `fk_TodoCategory_Category`
     FOREIGN KEY (`Category_id`)
     REFERENCES `todo`.`Category` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_TodoCategory_Todo1`
     FOREIGN KEY (`Todo_id`)
     REFERENCES `todo`.`Todo` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -151,13 +153,13 @@ CREATE TABLE IF NOT EXISTS `todo`.`UserCategory` (
   CONSTRAINT `fk_UserCategory_User1`
     FOREIGN KEY (`User_id`)
     REFERENCES `todo`.`User` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_UserCategory_Category1`
     FOREIGN KEY (`Category_id`)
     REFERENCES `todo`.`Category` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -177,9 +179,27 @@ CREATE TABLE IF NOT EXISTS `todo`.`TodoHistory` (
   CONSTRAINT `fk_TodoHistory_Todo1`
     FOREIGN KEY (`Todo_id`)
     REFERENCES `todo`.`Todo` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+
+-- Tabelas padrão do Django
+CREATE TABLE IF NOT EXISTS `todo`.`django_migrations` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `app` VARCHAR(255) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `applied` DATETIME(6) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `todo`.`django_content_type` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `app_label` VARCHAR(100) NOT NULL,
+    `model` VARCHAR(100) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
+) ENGINE=InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
