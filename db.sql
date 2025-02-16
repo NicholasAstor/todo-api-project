@@ -183,25 +183,6 @@ CREATE TABLE IF NOT EXISTS `todo`.`TodoHistory` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
-
--- Tabelas padrão do Django
-CREATE TABLE IF NOT EXISTS `todo`.`django_migrations` (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `app` VARCHAR(255) NOT NULL,
-    `name` VARCHAR(255) NOT NULL,
-    `applied` DATETIME(6) NOT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS `todo`.`django_content_type` (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `app_label` VARCHAR(100) NOT NULL,
-    `model` VARCHAR(100) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
-) ENGINE=InnoDB;
-
-
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
