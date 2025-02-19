@@ -30,21 +30,19 @@ CREATE TABLE IF NOT EXISTS `todo`.`timestamps` (
 
 
 -- -----------------------------------------------------
--- Table `todo`.`User`
+-- Table `todo`.`DbUser`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `todo`.`User` ;
+DROP TABLE IF EXISTS `todo`.`DbUser` ;
 
-CREATE TABLE IF NOT EXISTS `todo`.`User` (
+CREATE TABLE IF NOT EXISTS `todo`.`DbUser` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `email` VARCHAR(100) NOT NULL,
-  `password` VARCHAR(255) NOT NULL,
   `sms` VARCHAR(16) NULL,
   `created_at` TIMESTAMP NOT NULL,
   `updated_at` TIMESTAMP NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
-  UNIQUE INDEX `password_UNIQUE` (`password` ASC) VISIBLE)
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -60,12 +58,12 @@ CREATE TABLE IF NOT EXISTS `todo`.`Todo` (
   `deadline` TIMESTAMP NOT NULL,
   `created_at` TIMESTAMP NOT NULL,
   `updated_at` TIMESTAMP NOT NULL,
-  `User_id` INT NOT NULL,
+  `DbUser_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_Todo_User1_idx` (`User_id` ASC) VISIBLE,
-  CONSTRAINT `fk_Todo_User1`
-    FOREIGN KEY (`User_id`)
-    REFERENCES `todo`.`User` (`id`)
+  INDEX `fk_Todo_DbUser1_idx` (`DbUser_id` ASC) VISIBLE,
+  CONSTRAINT `fk_Todo_DbUser1`
+    FOREIGN KEY (`DbUser_id`)
+    REFERENCES `todo`.`DbUser` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -81,14 +79,14 @@ CREATE TABLE IF NOT EXISTS `todo`.`Comment` (
   `body` VARCHAR(500) NOT NULL,
   `created_at` TIMESTAMP NOT NULL,
   `updated_at` TIMESTAMP NOT NULL,
-  `User_id` INT NOT NULL,
+  `DbUser_id` INT NOT NULL,
   `Todo_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_Comment_User1_idx` (`User_id` ASC) VISIBLE,
+  INDEX `fk_Comment_DbUser1_idx` (`DbUser_id` ASC) VISIBLE,
   INDEX `fk_Comment_Todo1_idx` (`Todo_id` ASC) VISIBLE,
-  CONSTRAINT `fk_Comment_User1`
-    FOREIGN KEY (`User_id`)
-    REFERENCES `todo`.`User` (`id`)
+  CONSTRAINT `fk_Comment_DbUser1`
+    FOREIGN KEY (`DbUser_id`)
+    REFERENCES `todo`.`DbUser` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Comment_Todo1`
@@ -139,23 +137,23 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `todo`.`UserCategory`
+-- Table `todo`.`DbUserCategory`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `todo`.`UserCategory` ;
+DROP TABLE IF EXISTS `todo`.`DbUserCategory` ;
 
-CREATE TABLE IF NOT EXISTS `todo`.`UserCategory` (
+CREATE TABLE IF NOT EXISTS `todo`.`DbUserCategory` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `User_id` INT NOT NULL,
+  `DbUser_id` INT NOT NULL,
   `Category_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_UserCategory_User1_idx` (`User_id` ASC) VISIBLE,
-  INDEX `fk_UserCategory_Category1_idx` (`Category_id` ASC) VISIBLE,
-  CONSTRAINT `fk_UserCategory_User1`
-    FOREIGN KEY (`User_id`)
-    REFERENCES `todo`.`User` (`id`)
+  INDEX `fk_DbUserCategory_DbUser1_idx` (`DbUser_id` ASC) VISIBLE,
+  INDEX `fk_DbUserCategory_Category1_idx` (`Category_id` ASC) VISIBLE,
+  CONSTRAINT `fk_DbUserCategory_DbUser1`
+    FOREIGN KEY (`DbUser_id`)
+    REFERENCES `todo`.`DbUser` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_UserCategory_Category1`
+  CONSTRAINT `fk_DbUserCategory_Category1`
     FOREIGN KEY (`Category_id`)
     REFERENCES `todo`.`Category` (`id`)
     ON DELETE CASCADE

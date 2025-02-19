@@ -19,7 +19,7 @@ class Comment(models.Model):
     body = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey('User', models.CASCADE, db_column='User_id')  # Field name made lowercase.
+    user = models.ForeignKey('DbUser', models.CASCADE, db_column='User_id')  # Field name made lowercase.
     todo = models.ForeignKey('Todo', models.CASCADE, db_column='Todo_id')  # Field name made lowercase.
 
     class Meta:
@@ -34,7 +34,7 @@ class Todo(models.Model):
     deadline = models.DateTimeField(blank=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey('User', models.CASCADE, db_column='User_id')  # Field name made lowercase.
+    user = models.ForeignKey('DbUser', models.CASCADE, db_column='User_id')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -65,18 +65,17 @@ class Todohistory(models.Model):
         db_table = 'TodoHistory'
 
 
-class User(models.Model):
+class DbUser(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=45)
     email = models.CharField(unique=True, max_length=100)
-    password = models.CharField(unique=True, max_length=255)
     sms = models.CharField(max_length=16, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         managed = False
-        db_table = 'User'
+        db_table = 'DbUser'
         
     def __str__(self):
         return "Nome do usuário: " + self.name + " - Email: " + self.email
@@ -84,7 +83,7 @@ class User(models.Model):
 
 class Usercategory(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, models.CASCADE, db_column='User_id')  # Field name made lowercase.
+    user = models.ForeignKey(DbUser, models.CASCADE, db_column='User_id')  # Field name made lowercase.
     category = models.ForeignKey(Category, models.CASCADE, db_column='Category_id')  # Field name made lowercase.
 
     class Meta:
