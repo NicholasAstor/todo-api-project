@@ -8,7 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 
-from .models import DbUser
+from .models import DbUser, Todo
 
 # This function will return the serialized representation of the tokens
 def get_tokens_for_user(user):
@@ -18,6 +18,7 @@ def get_tokens_for_user(user):
         'refresh': str(refresh),
         'access': str(refresh.access_token)
     }
+
 class Signup(APIView):
     permission_classes = [AllowAny]
 
@@ -94,3 +95,22 @@ class UpdatePassword(APIView):
         user.save()
 
         return Response({"status": "201", "success":True, "error": False, "message": "Senha atualizada com sucesso", "data":{"user_password": user.password}}, status=status.HTTP_201_CREATED)
+
+class CreateTodo(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        title = request.data.get('title')
+        description = request.data.get('description')
+        deadline = request.data.get('deadline')
+
+        user = DbUser.objects.filter(email=request.user.email).first()
+
+        if not title and description:
+            return Response({"status": "400", "success":False, "error": True, "message": "É necessário título de descrição. ", "data":None}, status=status.HTTP_400_BAD_REQUEST)
+
+        todo = Todo.objects.create(title=title, description=description, deadline=deadline, user=user)
+        todo.save()
+
+        return Response({"status": "201", "success": True, "error": False, "message": "Todo criado com sucesso. ", "data": {"title": todo.title, "description": todo.description, "created_at":todo.created_at}})

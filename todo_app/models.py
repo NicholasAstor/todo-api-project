@@ -19,7 +19,7 @@ class Comment(models.Model):
     body = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey('DbUser', models.CASCADE, db_column='User_id')  # Field name made lowercase.
+    user = models.ForeignKey('DbUser', models.CASCADE, db_column='DbUser_id')  # Field name made lowercase.
     todo = models.ForeignKey('Todo', models.CASCADE, db_column='Todo_id')  # Field name made lowercase.
 
     class Meta:
@@ -34,7 +34,7 @@ class Todo(models.Model):
     deadline = models.DateTimeField(blank=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey('DbUser', models.CASCADE, db_column='User_id')  # Field name made lowercase.
+    user = models.ForeignKey('DbUser', models.CASCADE, db_column='DbUser_id')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -83,7 +83,7 @@ class DbUser(models.Model):
 
 class Usercategory(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(DbUser, models.CASCADE, db_column='User_id')  # Field name made lowercase.
+    user = models.ForeignKey(DbUser, models.CASCADE, db_column='DbUser_id')  # Field name made lowercase.
     category = models.ForeignKey(Category, models.CASCADE, db_column='Category_id')  # Field name made lowercase.
 
     class Meta:
