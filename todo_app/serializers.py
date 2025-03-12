@@ -15,7 +15,7 @@ class ComentSerializer(serializers.ModelSerializer):
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
-        fields = ['id', 'body', 'created_at', 'user', 'todo']
+        fields = ['id', 'title', 'description', 'created_at', 'user']
                 
 class TodocategorySerializer(serializers.ModelSerializer):
     class Meta:
