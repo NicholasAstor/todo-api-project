@@ -66,3 +66,5 @@ A API segue uma estrutura RESTful. Com os seguintes endpoints:
 - Terminar CRUD's do projeto
 - Implementação de testes automatizados
 - Interface frontend para interação com a API (ainda pensando se vou fazer)
+
+[https://github.com/NicholasAstor/todo-api-project](https://roadmap.sh/projects/todo-list-api)
