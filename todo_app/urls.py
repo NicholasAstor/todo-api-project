@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Signup, Login, UpdatePassword, CreateTodo, ListTodos, UpdateTodo
+from .views import Signup, Login, UpdatePassword, CreateTodo, ListTodos, UpdateTodo, DeleteTodo
 
 urlpatterns = [
     path('signup/', Signup.as_view(), name='Signup'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('todo/create/', CreateTodo.as_view(), name="CreateTodo"),
     path('todo/list/', ListTodos.as_view(), name="ListTodos"),
     path('todo/edit/<int:id>/', UpdateTodo.as_view(), name="UpdateTodo"),
+    path('todo/delete/<int:id>', DeleteTodo.as_view(), name="DeleteTodo"),
 ]

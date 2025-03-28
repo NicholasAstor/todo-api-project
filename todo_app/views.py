@@ -8,8 +8,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 
-from .models import DbUser, Todo, Todohistory
-from .serializers import TodoSerializer
+from .models import DbUser, Todo, Todohistory, Category, Todocategory
+from .serializers import TodoSerializer, CategorySerializer
 
 # This function will return the serialized representation of the tokens
 def get_tokens_for_user(user):
@@ -121,12 +121,17 @@ class ListTodos(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        limit = request.data.get('limit')
+
         user = DbUser.objects.filter(email=request.user.email).first()
 
         if not user:
             return Response({"status": "400", "success":False, "error": True, "message": "Usuário não cadastrado. ", "data":None}, status=status.HTTP_400_BAD_REQUEST)
 
-        todos = Todo.objects.filter(user=user)
+        if limit:
+            todos = Todo.objects.filter(user=user)[:limit]     
+        else:
+            todos = Todo.objects.filter(user=user)      
 
         todos_serializer = TodoSerializer(todos, many=True)
 
@@ -168,4 +173,77 @@ class UpdateTodo(APIView):
         except:
             return Response({"status":500,"success":False, "error":True,"message":"Internal server error","data":None}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-        return Response({"status":200,"success":True, "error":False, "message":"Todo updated successfully", "data":{"id":todo.id}}, status=status.HTTP_200_OK)
+        return Response({"status":200,"success":True, "error":False, "message":"Todo atualizado com sucesso", "data":{"id":todo.id}}, status=status.HTTP_200_OK)
+    
+class DeleteTodo(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, **kwargs):
+        id = kwargs.get('id')
+
+        user = DbUser.objects.filter(email=request.user.email).first()
+
+        todo = Todo.objects.filter(id=id, user=user).first()
+
+        if not todo:
+            return Response({"status": "400", "success":False, "error": True, "message": "Todo não encontrado. ", "data":None}, status=status.HTTP_400_BAD_REQUEST)
+        
+        todo.delete()
+
+        return Response({"status":200,"success":True, "error":False, "message":"Todo deletado com sucesso", "data":None}, status=status.HTTP_200_OK)
+
+class CreateCategory(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        name = request.data.get('name')
+
+        if not name:
+            return Response({"status": "400", "success":False, "error": True, "message": "Nome da categoria é necessário. ", "data":None}, status=status.HTTP_400_BAD_REQUEST)
+        
+        category = Category.objects.create(name=name)
+        category.save()
+
+        return Response({"status": "201", "success": True, "error": False, "message": "Categoria criada com sucesso. ", "data": {"name": category.name, "created_at":category.created_at}}, status=status.HTTP_201_CREATED)
+
+class AssociateCategoryTodo(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        todo = request.data.get('todo')
+        category = request.data.get('category')
+
+        user = DbUser.objects.filter(email = request.user.email).first()
+
+        todo_exists = Todo.objects.filter(id=todo, user=user).first()
+        category_exists = Category.objects.filter(id=category).first()
+
+        if not todo_exists:
+            return Response({"status": "400", "success":False, "error": True, "message": "Todo não encontrado", "data":None}, status=status.HTTP_400_BAD_REQUEST)
+        if not category_exists:
+            return Response({"status": "400", "success":False, "error": True, "message": "Categoria não encontrada", "data":None}, status=status.HTTP_400_BAD_REQUEST)
+        
+        todocategory = Todocategory.objects.create(todo=todo_exists, category=category_exists)
+
+        todocategory.save()
+
+        return Response({"status": "201", "success": True, "error": False, "message": "Relação criada com sucesso!", "data": {"todo": todo_exists.title, "categoria":category_exists.name}}, status=status.HTTP_201_CREATED)
+    
+class ListCategory(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        limit = request.data.get('limit')
+
+        if limit:
+            categories = Category.objects.all()[:limit]
+        else:
+            categories = Category.objects.all()
+
+        categories_serializer = CategorySerializer(categories, many=True)
+
+        return Response({"success":True, "error":False, "message":"success", "data":{"Categories":categories_serializer.data}})

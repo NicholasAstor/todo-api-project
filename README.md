@@ -60,6 +60,7 @@ A API segue uma estrutura RESTful. Com os seguintes endpoints:
 - `GET /api/todo/list/` - Lista todas as tarefas
 - `POST /api/todo/create/` - Cria uma nova tarefa
 - `PUT /api/todo/edit/{id}/` - Atualiza uma tarefa
+- `DELETE /api/todo/delete/{id}/` - Deleta uma tarefa
 
 ## Melhorias Futuras
 - Terminar CRUD's do projeto
